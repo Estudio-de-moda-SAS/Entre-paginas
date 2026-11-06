@@ -1,0 +1,350 @@
+/* ─────────── Libro: secuencia de pliegos ─────────── */
+
+.book {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  padding: clamp(1rem, 4vw, 3.5rem) clamp(0rem, 3vw, 3rem) 7rem;
+}
+
+/* ─────────── Pliego (doble página) ─────────── */
+
+.spread {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: min(92vh, 860px);
+  background-color: var(--crema);
+  background-image: var(--grano);
+  /* grosor de las hojas a ambos lados + sombra sobre la mesa */
+  box-shadow:
+    1px 1px 0 #efe7d8, 2px 2px 0 #d8ccb7, 3px 3px 0 #ede4d4, 4px 4px 0 #d2c5ae,
+    -1px 1px 0 #efe7d8, -2px 2px 0 #d8ccb7, -3px 3px 0 #ede4d4, -4px 4px 0 #d2c5ae,
+    0 40px 60px -35px rgba(85, 68, 56, 0.55);
+}
+
+/* El lomo: sombra del pliegue en el centro */
+.spread::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 8rem;
+  translate: -50% 0;
+  pointer-events: none;
+  z-index: 6;
+  mix-blend-mode: multiply;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(85, 68, 56, 0.06) 35%,
+    rgba(85, 68, 56, 0.2) 49.5%,
+    rgba(85, 68, 56, 0.06) 65%,
+    transparent
+  );
+}
+
+.page {
+  position: relative;
+  min-width: 0;
+  padding: clamp(4rem, 7vw, 6rem) clamp(1.75rem, 5vw, 4.75rem) clamp(4rem, 6vw, 5.5rem);
+}
+.page[data-bleed] {
+  padding: 0;
+  overflow: hidden;
+}
+
+.across {
+  position: relative;
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: clamp(4rem, 7vw, 6rem) clamp(1.75rem, 5vw, 4.75rem) clamp(4rem, 6vw, 5.5rem);
+}
+.across[data-bleed] {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Cabeceras de página y folios, como en un libro impreso */
+.running,
+.folio {
+  position: absolute;
+  z-index: 5;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--tinta-suave);
+}
+.running {
+  top: 1.75rem;
+}
+.folio {
+  bottom: 1.6rem;
+  font-style: normal;
+  font-variant-numeric: oldstyle-nums;
+}
+.running[data-side="left"],
+.folio[data-side="left"] {
+  left: clamp(1.75rem, 5vw, 4.75rem);
+}
+.running[data-side="right"],
+.folio[data-side="right"] {
+  right: clamp(1.75rem, 5vw, 4.75rem);
+}
+
+/* ─────────── Esquina para pasar la página ─────────── */
+
+.curl {
+  position: absolute;
+  z-index: 7;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0 0 0 1rem;
+  text-decoration: none;
+  color: var(--tinta);
+}
+.curlLabel {
+  font-family: var(--f-hand);
+  font-size: 1.35rem;
+  line-height: 1;
+  margin-bottom: 1.4rem;
+  transition: translate 0.25s;
+}
+.curlCorner {
+  position: relative;
+  width: 3.6rem;
+  height: 3.6rem;
+  background: linear-gradient(315deg, var(--papel) 0 50%, transparent 50%);
+  transition:
+    width 0.25s,
+    height 0.25s;
+}
+.curlCorner::before {
+  /* el reverso de la hoja doblada */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #fbf7ee 0%, #e9dfcc 48%, transparent 50%);
+  box-shadow: none;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  filter: drop-shadow(2px 2px 2px rgba(85, 68, 56, 0.3));
+}
+.curl:hover .curlCorner,
+.curl:focus-visible .curlCorner {
+  width: 4.6rem;
+  height: 4.6rem;
+}
+.curl:hover .curlLabel {
+  translate: -0.25rem 0;
+}
+
+/* ─────────── Marcapáginas (enlace al índice) ─────────── */
+
+.bookmark {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  right: clamp(1rem, 4vw, 3rem);
+  width: 2.3rem;
+  height: 6.2rem;
+  display: grid;
+  justify-items: center;
+  padding-top: 1rem;
+  background: var(--rosa);
+  background-image: repeating-linear-gradient(90deg, transparent 0 3px, rgba(255, 255, 255, 0.14) 3px 4px);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
+  text-decoration: none;
+  color: var(--tinta);
+  box-shadow: inset 0 -8px 10px -8px rgba(85, 68, 56, 0.3);
+  transition: height 0.25s;
+}
+.bookmark:hover,
+.bookmark:focus-visible {
+  height: 7rem;
+}
+.bookmarkLabel {
+  writing-mode: vertical-rl;
+  font-family: var(--f-hand);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+/* ─────────── Cerrar el libro (vuelve a la portada) ─────────── */
+
+.closeBook {
+  position: fixed;
+  z-index: 50;
+  top: 0.9rem;
+  left: clamp(1rem, 4vw, 3rem);
+  padding: 0.4rem 0.85rem 0.45rem;
+  background-color: var(--crema);
+  background-image: var(--grano);
+  box-shadow: var(--sombra-papel);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.1;
+  color: var(--tinta);
+  text-decoration: none;
+  rotate: -1.5deg;
+  transition: rotate 0.2s;
+}
+.closeBook:hover,
+.closeBook:focus-visible {
+  rotate: 0deg;
+}
+
+/* ─────────── Sello de demostración ─────────── */
+
+.demoStamp {
+  position: fixed;
+  z-index: 40;
+  left: 1rem;
+  bottom: 1rem;
+  pointer-events: none;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid var(--rosa-hondo);
+  outline: 1px solid var(--rosa-hondo);
+  outline-offset: 2px;
+  color: var(--rosa-hondo);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.1;
+  rotate: -4deg;
+  background: rgba(243, 235, 221, 0.75);
+  opacity: 0.9;
+}
+
+/* ─────────── Fin de capítulo / portadilla del siguiente ─────────── */
+
+.endLeft {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  min-height: 100%;
+}
+.endNote {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-md);
+  color: var(--tinta-suave);
+  max-width: 20ch;
+  margin: 0;
+}
+.endLink {
+  font-size: var(--t-sm);
+  color: var(--tinta-suave);
+  text-underline-offset: 0.25em;
+}
+
+.halfTitle {
+  display: grid;
+  align-content: center;
+  min-height: 100%;
+  padding-bottom: 3rem;
+}
+.numeral {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-lg);
+  color: var(--oliva);
+  margin: 0 0 0.5rem;
+}
+.halfTitleName {
+  font-size: var(--t-2xl);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.1rem;
+}
+.halfTitleSub {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-lg);
+  line-height: 1.25;
+  max-width: 18ch;
+  margin: 0;
+}
+
+.sprig {
+  width: 4.5rem;
+  color: var(--oliva);
+}
+
+/* ─────────── Celular: una página debajo de otra ─────────── */
+
+@media (max-width: 820px) {
+  .book {
+    gap: 2.5rem;
+    padding: 2.75rem 0 6rem;
+  }
+  .spread {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    box-shadow: 0 20px 30px -24px rgba(85, 68, 56, 0.5);
+  }
+  .spread::after {
+    display: none;
+  }
+  .page {
+    padding: 3.75rem 1.5rem 3.5rem;
+  }
+  .page + .page {
+    border-top: 1px solid rgba(85, 68, 56, 0.12);
+  }
+  .page[data-bleed] {
+    min-height: 70vh;
+  }
+  .across {
+    padding: 3.75rem 1.25rem 3.5rem;
+  }
+  .running[data-side="left"],
+  .folio[data-side="left"] {
+    left: 1.5rem;
+  }
+  .running[data-side="right"],
+  .folio[data-side="right"] {
+    right: 1.5rem;
+  }
+  .running {
+    top: 1.25rem;
+  }
+  .folio {
+    bottom: 1.1rem;
+  }
+  /* en el celular cada página es independiente: se ve solo un folio */
+  .running[data-hide-mobile],
+  .folio[data-hide-mobile] {
+    display: none;
+  }
+  .bookmark {
+    height: 5rem;
+  }
+  /* en el celular el sello queda arriba y se va con el scroll */
+  .demoStamp {
+    position: absolute;
+    top: 0.7rem;
+    bottom: auto;
+    left: auto;
+    right: 4rem;
+    font-size: 0.85rem;
+  }
+  .closeBook {
+    top: 0.6rem;
+    left: 0.75rem;
+    font-size: 0.95rem;
+  }
+  .halfTitle {
+    min-height: 60vh;
+  }
+}

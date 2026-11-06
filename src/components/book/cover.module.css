@@ -1,0 +1,346 @@
+/* ─────────── Portada: el libro cerrado sobre la mesa ─────────── */
+
+.stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 2.25rem;
+  padding: 3rem 1rem 4rem;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 42%, rgba(250, 248, 242, 0.55), transparent 70%),
+    var(--grano),
+    var(--papel);
+}
+
+.book {
+  position: relative;
+  width: min(84vw, 27rem);
+  aspect-ratio: 0.72;
+  perspective: 2400px;
+  transition: translate 1.1s cubic-bezier(0.6, 0.05, 0.25, 1);
+}
+.book[data-open] {
+  translate: 50% 0;
+}
+
+/* ── Interior: la primera página, con la dedicatoria ── */
+
+.inside {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 3rem 2.25rem;
+  text-align: center;
+  background-color: var(--crema);
+  background-image:
+    linear-gradient(90deg, rgba(85, 68, 56, 0.16), transparent 9%),
+    var(--grano);
+  /* el borde de las hojas */
+  box-shadow:
+    1px 0 0 #efe7d8, 2px 1px 0 #d6cab4, 3px 1px 0 #ede4d4, 4px 2px 0 #cfc2aa, 5px 2px 0 #e9dfcd,
+    6px 3px 0 #c9bba2,
+    0 30px 50px -25px rgba(85, 68, 56, 0.6);
+}
+.inside > * {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.book[data-open] .inside > * {
+  opacity: 1;
+  transition: opacity 0.6s ease 0.7s;
+}
+/* estado inicial sin animación (al volver desde "Cerrar el libro") */
+.book[data-instant],
+.book[data-instant] * {
+  transition: none !important;
+}
+.dedication {
+  font-family: var(--f-hand);
+  font-size: 2.2rem;
+  line-height: 1.15;
+  margin: 0;
+  rotate: -2deg;
+}
+.insideText {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-md);
+  line-height: 1.4;
+  max-width: 19ch;
+  margin: 0;
+}
+.start {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.7rem 1.4rem 0.75rem;
+  background: var(--tinta);
+  color: var(--crema);
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  text-decoration: none;
+  rotate: -1deg;
+  box-shadow: var(--sombra-papel);
+  transition: rotate 0.2s;
+}
+.start:hover {
+  rotate: 0deg;
+}
+.toIndex {
+  font-size: var(--t-sm);
+  color: var(--tinta-suave);
+  text-underline-offset: 0.25em;
+}
+.ribbon {
+  position: absolute;
+  top: -0.2rem;
+  right: 18%;
+  width: 1.1rem;
+  height: 38%;
+  background: var(--rosa);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 92%, 0 100%);
+  box-shadow: inset 0 -10px 10px -10px rgba(85, 68, 56, 0.4);
+}
+
+/* ── La tapa ── */
+
+.cover {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 1.1s cubic-bezier(0.6, 0.05, 0.25, 1);
+}
+.book[data-open] .cover {
+  transform: rotateY(-178deg);
+  pointer-events: none;
+}
+
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 2px 5px 5px 2px;
+}
+
+/* Tela de encuadernación color oliva */
+.front {
+  background-color: var(--oliva);
+  background-image:
+    linear-gradient(90deg, rgba(40, 42, 30, 0.38) 0, rgba(40, 42, 30, 0.12) 3.5%, rgba(250, 248, 242, 0.08) 5%, rgba(40, 42, 30, 0.22) 6.5%, transparent 9%),
+    repeating-linear-gradient(0deg, rgba(250, 248, 242, 0.035) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(40, 42, 30, 0.06) 0 1px, transparent 1px 3px),
+    var(--fibra);
+  box-shadow:
+    inset 0 0 0 1px rgba(40, 42, 30, 0.25),
+    inset 0 0 40px rgba(40, 42, 30, 0.25),
+    0 2px 3px rgba(85, 68, 56, 0.3),
+    0 40px 60px -30px rgba(60, 45, 35, 0.7);
+}
+
+/* Guarda: el interior de la tapa, con un ex libris pegado */
+.back {
+  transform: rotateY(180deg);
+  display: grid;
+  place-items: center;
+  background-color: var(--kraft);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(95, 98, 74, 0.45) 1.6px, transparent 2.2px) 0 0 / 16px 16px,
+    radial-gradient(circle at 50% 50%, rgba(250, 248, 242, 0.35) 1.2px, transparent 1.8px) 8px 8px / 16px 16px,
+    var(--fibra);
+  box-shadow: inset -30px 0 30px -20px rgba(85, 68, 56, 0.35);
+}
+.exlibris {
+  position: relative;
+  width: 62%;
+  padding: 1.6rem 1.2rem 1.4rem;
+  text-align: center;
+  background-color: var(--crema);
+  background-image: var(--grano);
+  rotate: 1.2deg;
+  box-shadow: 0 1px 2px rgba(85, 68, 56, 0.3);
+}
+.exlibris::before {
+  content: "";
+  position: absolute;
+  inset: 0.5rem;
+  border: 1px solid var(--oliva);
+  border-radius: 50% / 18%;
+}
+.exlibrisTitle {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-lg);
+  line-height: 1;
+  color: var(--oliva);
+  margin: 0 0 0.6rem;
+}
+.exlibrisText {
+  font-size: var(--t-sm);
+  font-style: italic;
+  margin: 0 0 0.5rem;
+}
+.exlibrisName {
+  font-family: var(--f-hand);
+  font-size: 1.7rem;
+  line-height: 1.3;
+  margin: 0 1rem;
+  border-bottom: 1px solid rgba(85, 68, 56, 0.45);
+  min-height: 2.3rem;
+}
+
+/* Etiqueta de papel pegada en la tela */
+.label {
+  position: absolute;
+  top: 19%;
+  left: 15%;
+  right: 8%;
+  padding: 1.6rem 1.4rem 1.4rem;
+  background-color: var(--crema);
+  background-image: var(--grano);
+  text-align: center;
+  rotate: -0.8deg;
+  box-shadow:
+    0 1px 1px rgba(40, 42, 30, 0.3),
+    0 8px 16px -8px rgba(40, 42, 30, 0.5);
+}
+.label::before {
+  /* filete doble, como las etiquetas de los álbumes antiguos */
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  border: 1px solid rgba(85, 68, 56, 0.55);
+  outline: 1px solid rgba(85, 68, 56, 0.3);
+  outline-offset: 3px;
+  pointer-events: none;
+}
+.title {
+  font-size: clamp(2.9rem, 12vw, 4.2rem);
+  font-weight: 300;
+  line-height: 0.88;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.75rem;
+}
+.title span {
+  display: block;
+}
+.title span + span {
+  font-style: italic;
+  padding-left: 1.2em;
+}
+.tagline {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--tinta-suave);
+}
+
+/* Sello de goma con los cinco equipos, centrado bajo la etiqueta
+   (el centro óptico de la tapa queda a la derecha del lomo) */
+.stamp {
+  position: absolute;
+  left: calc(53.5% - 14%);
+  top: 64%;
+  width: 28%;
+  color: #e3cdc6;
+  opacity: 0.85;
+  rotate: -12deg;
+  mix-blend-mode: screen;
+}
+
+.authors {
+  position: absolute;
+  left: 9%;
+  right: 0;
+  bottom: 5.5%;
+  text-align: center;
+  margin: 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #e4dac5;
+  opacity: 0.85;
+  /* estampado sobre la tela */
+  text-shadow: 0 -1px 0 rgba(30, 32, 22, 0.45);
+}
+
+/* ── Botón para abrir ── */
+
+.open {
+  border: 0;
+  background: none;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: var(--t-lg);
+  line-height: 1;
+  color: var(--tinta);
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  transition: opacity 0.4s;
+}
+.open svg {
+  width: 9rem;
+  color: var(--rosa-hondo);
+  transition: translate 0.25s;
+}
+.open:hover svg {
+  translate: 0 2px;
+}
+.open[hidden] {
+  display: none;
+}
+
+.exlibrisMobile {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .book[data-open] {
+    translate: 0 0;
+  }
+  .inside {
+    gap: 1rem;
+    padding: 2rem 1.75rem;
+  }
+  .ribbon {
+    right: 6%;
+    z-index: 2;
+  }
+  .exlibrisMobile {
+    display: block;
+    width: 76%;
+    padding: 1rem 0.8rem 0.9rem;
+    margin-bottom: 0.5rem;
+    box-shadow: var(--sombra-papel);
+  }
+  .exlibrisMobile .exlibrisTitle {
+    font-size: var(--t-md);
+    margin-bottom: 0.3rem;
+  }
+  .exlibrisMobile .exlibrisText {
+    margin-bottom: 0.2rem;
+  }
+  .exlibrisMobile .exlibrisName {
+    font-size: 1.3rem;
+    min-height: 0;
+    margin: 0 0.4rem;
+    white-space: nowrap;
+  }
+  .book[data-open] .cover {
+    opacity: 0;
+    transition:
+      transform 1.1s cubic-bezier(0.6, 0.05, 0.25, 1),
+      opacity 0.4s ease 0.7s;
+  }
+}
