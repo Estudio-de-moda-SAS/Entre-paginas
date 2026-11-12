@@ -1,0 +1,93 @@
+/* ─────────── Foto ampliada ─────────── */
+
+/* Capa sobre la foto que la hace "tocable" */
+.trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+.trigger:focus-visible {
+  outline: 3px solid var(--rosa-hondo);
+  outline-offset: -3px;
+}
+
+.dialog {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 3.5rem 1rem 1.5rem;
+  border: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: zoom-out;
+}
+.dialog:not([open]) {
+  display: none;
+}
+.dialog::backdrop {
+  background: rgba(40, 32, 26, 0.88);
+}
+
+.figure {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  cursor: default;
+}
+.figure img {
+  display: block;
+  max-width: min(94vw, 1600px);
+  max-height: calc(100dvh - 8rem);
+  width: auto;
+  height: auto;
+  background: var(--foto);
+  padding: 0.6rem;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+}
+.caption {
+  font-family: var(--f-hand);
+  font-size: 1.6rem;
+  line-height: 1.15;
+  color: var(--crema);
+  text-align: center;
+}
+
+.close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.45rem 0.9rem 0.5rem;
+  border: 1px solid rgba(243, 235, 221, 0.6);
+  background: transparent;
+  color: var(--crema);
+  font-family: var(--f-body);
+  font-size: var(--t-sm);
+  cursor: pointer;
+}
+.close:hover,
+.close:focus-visible {
+  background: rgba(243, 235, 221, 0.15);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog[open] .figure {
+    animation: aparecer 0.25s ease-out;
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+      scale: 0.97;
+    }
+  }
+}

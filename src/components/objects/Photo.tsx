@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Photo as PhotoData } from "@/content/types";
 import { imageUrl } from "@/lib/media";
+import { PhotoZoom } from "./PhotoZoom";
 import { Tape, type TapeProps } from "./Tape";
 import s from "./objects.module.css";
 
@@ -30,13 +31,16 @@ export function PhotoImage({ photo, fill, width, priority }: ImageProps) {
   return (
     <div className={s.image} data-ratio={photo.ratio ?? "landscape"} data-fill={fill || undefined}>
       {photo.src ? (
-        <img
-          src={imageUrl(photo.src, width)}
-          alt={photo.alt}
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          style={photo.focus ? { objectPosition: photo.focus } : undefined}
-        />
+        <>
+          <img
+            src={imageUrl(photo.src, width)}
+            alt={photo.alt}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            style={photo.focus ? { objectPosition: photo.focus } : undefined}
+          />
+          <PhotoZoom src={imageUrl(photo.src)} alt={photo.alt} caption={photo.caption} />
+        </>
       ) : (
         <div className={s.placeholder} data-tone={toneFor(photo.alt + (photo.caption ?? ""))} role="img" aria-label={photo.alt}>
           <span className={s.placeholderLabel} aria-hidden="true">
@@ -70,6 +74,7 @@ export function Polaroid({ photo, tilt = 0, tape, className, style, children, ..
       <figcaption>
         {photo.caption}
         {photo.date && <span className={s.date}>{photo.date}</span>}
+          {photo.from && <span className={s.date}>{photo.from}</span>}
       </figcaption>
       {children}
     </figure>
@@ -94,10 +99,11 @@ export function Print({
     >
       {tape && <Tape {...tape} />}
       <PhotoImage photo={photo} {...rest} />
-      {(photo.caption || photo.date) && (
+      {(photo.caption || photo.date || photo.from) && (
         <figcaption className={s.printCaption} data-at={captionAt}>
           {photo.caption}
           {photo.date && <span className={s.date}>{photo.date}</span>}
+          {photo.from && <span className={s.date}>{photo.from}</span>}
         </figcaption>
       )}
       {children}

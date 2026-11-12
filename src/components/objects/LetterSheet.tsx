@@ -40,6 +40,7 @@ export function LetterSheet({ letter, sheet = "completa", tilt = 0, className, c
       {paragraphs.map((p, i) => (
         <p key={i}>{p}</p>
       ))}
+      {showSign && letter.closing && <p className={s.letterClosing}>{letter.closing}</p>}
       {showSign && (
         <p className={s.letterSign}>
           {letter.signature}

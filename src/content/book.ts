@@ -17,7 +17,7 @@ export const book = {
    * Mientras sea `true`, el libro muestra la marca "versión de demostración".
    * Pasar a `false` cuando todo el contenido provisional esté reemplazado.
    */
-  demoMode: true,
+  demoMode: false,
 };
 
 /** El libro completo, en orden de lectura. */
@@ -84,22 +84,13 @@ export const sections: Section[] = [
     folio: 61,
   },
   {
-    slug: "todos",
-    href: "/capitulos/todos/",
+    slug: "entre-risas",
+    href: "/capitulos/entre-risas/",
     kind: "capitulo",
     numeral: "VI",
-    title: "Todos",
+    title: "Entre risas",
     subtitle: "Las pequeñas cosas que hicieron grande esta historia.",
     folio: 73,
-  },
-  {
-    slug: "notas-personales",
-    href: "/capitulos/notas-personales/",
-    kind: "capitulo",
-    numeral: "VII",
-    title: "Notas personales",
-    subtitle: "Lo que nunca quisimos dejar sin escribir.",
-    folio: 85,
   },
   {
     slug: "epilogo",
@@ -107,7 +98,7 @@ export const sections: Section[] = [
     kind: "final",
     title: "Epílogo",
     subtitle: "Las mejores historias nunca terminan.",
-    folio: 97,
+    folio: 95,
   },
 ];
 

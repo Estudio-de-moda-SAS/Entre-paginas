@@ -16,6 +16,13 @@
   line-height: 1.2;
   margin: 0 0 1.2rem;
 }
+.letterClosing {
+  margin: 1.4rem 0 0;
+  font-style: italic;
+}
+.letterClosing + .letterSign {
+  margin-top: 0.6rem;
+}
 .letterSign {
   margin-top: 1.6rem;
   text-align: right;
@@ -309,6 +316,20 @@
     var(--grano);
   overflow: hidden;
 }
+.video[data-ratio="vertical"] .screen {
+  aspect-ratio: 9 / 16;
+}
+.video[data-ratio="square"] .screen {
+  aspect-ratio: 1;
+}
+.screen video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #2b2c22;
+}
 .screen iframe {
   position: absolute;
   inset: 0;
@@ -346,6 +367,12 @@
   font-family: var(--f-hand);
   font-size: 1.35rem;
   line-height: 1.1;
+}
+.videoFrom {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 1.1rem;
+  color: var(--tinta-suave);
 }
 .videoCaption {
   display: flex;

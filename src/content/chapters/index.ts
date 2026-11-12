@@ -1,6 +1,8 @@
 import type { Chapter } from "../types";
 import { desarrollo } from "./desarrollo";
 import { producto } from "./producto";
+import { entreRisas } from "./entre-risas";
+import { epilogo } from "./epilogo";
 
 /**
  * Capítulos con contenido. Para añadir uno nuevo:
@@ -11,6 +13,8 @@ import { producto } from "./producto";
 export const chapters: Record<string, Chapter> = {
   producto,
   desarrollo,
+  "entre-risas": entreRisas,
+  epilogo,
 };
 
 export function getChapter(slug: string): Chapter | undefined {

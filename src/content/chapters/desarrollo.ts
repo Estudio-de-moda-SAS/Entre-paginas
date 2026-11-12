@@ -3,9 +3,8 @@ import type { Chapter } from "../types";
 /**
  * Capítulo II · Desarrollo & UX
  *
- * Definitivo: la apertura (texto aprobado y captura real del contador de
- * Pilatos) y los mensajes de Dani Front, Cami Front, Pao y Deiv. El resto sigue
- * siendo CONTENIDO DE DEMOSTRACIÓN hasta que llegue el material del equipo.
+ * Capítulo aprobado tal como está: la apertura con el contador de Pilatos,
+ * los mensajes de Dani Front, Cami Front, Pao y Deiv, y la carta del equipo.
  */
 export const desarrollo: Chapter = {
   slug: "desarrollo",
@@ -189,19 +188,8 @@ export const desarrollo: Chapter = {
       ],
     },
     {
-      type: "foto-completa",
-      photo: {
-        demo: true,
-        alt: "Foto de demostración: el equipo de Desarrollo en la terraza de la oficina",
-        ratio: "landscape",
-      },
-      quote: "No hay sistema que funcione sin las personas que lo cuidan.",
-      quoteFrom: "algo que repetías en cada planeación",
-    },
-    {
       type: "sobre-y-voces",
       letter: {
-        demo: true,
         envelopeTo: "Para abrir cuando llegues a esta página",
         to: "Querida líder:",
         body: [
@@ -209,21 +197,8 @@ export const desarrollo: Chapter = {
           "Gracias por el tiempo que le dedicaste a cada uno, por las conversaciones de pasillo que terminaban resolviendo lo que tres reuniones no pudieron y por recordarnos que detrás de cada pedido hay una persona esperando.",
           "Donde estés, te llevas un equipo entero de tu lado.",
         ],
-        signature: "El equipo de Desarrollo",
+        signature: "Equipo de Desarrollo & UX",
         date: "noviembre de 2026",
-      },
-      audio: {
-        demo: true,
-        title: "Un mensaje de voz del equipo",
-        from: "Grabado por Valeria y Andrés",
-        duration: "1:30",
-        transcript:
-          "Transcripción de demostración. Aquí irá el texto del audio, para leerlo cuando no se pueda escuchar.",
-      },
-      video: {
-        demo: true,
-        title: "El equipo, en video",
-        caption: "grabado en la última daily",
       },
     },
   ],

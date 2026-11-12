@@ -33,7 +33,8 @@ export default async function ChapterPage({ params }: Props) {
 
   // Sin apertura propia, el capítulo abre con su título y una nota de que
   // las fotos están por llegar.
-  const needsTitle = !chapter || chapter.blocks[0]?.type !== "apertura";
+  const opener = chapter?.blocks[0]?.type;
+  const needsTitle = opener !== "apertura" && opener !== "bienvenida" && opener !== "despedida";
 
   // Cada pliego ocupa dos folios.
   let folio = section.folio + (needsTitle ? 2 : 0);
