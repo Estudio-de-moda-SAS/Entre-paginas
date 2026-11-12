@@ -1,5 +1,6 @@
 import type { Chapter } from "../types";
 import { desarrollo } from "./desarrollo";
+import { producto } from "./producto";
 
 /**
  * Capítulos con contenido. Para añadir uno nuevo:
@@ -8,6 +9,7 @@ import { desarrollo } from "./desarrollo";
  * Los capítulos que no están en esta lista se muestran como "en preparación".
  */
 export const chapters: Record<string, Chapter> = {
+  producto,
   desarrollo,
 };
 

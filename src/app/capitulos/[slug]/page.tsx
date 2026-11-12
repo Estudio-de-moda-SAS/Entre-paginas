@@ -31,8 +31,12 @@ export default async function ChapterPage({ params }: Props) {
   const chapter = getChapter(slug);
   const next = getNextSection(slug);
 
+  // Sin apertura propia, el capítulo abre con su título y una nota de que
+  // las fotos están por llegar.
+  const needsTitle = !chapter || chapter.blocks[0]?.type !== "apertura";
+
   // Cada pliego ocupa dos folios.
-  let folio = section.folio;
+  let folio = section.folio + (needsTitle ? 2 : 0);
   const views = (chapter?.blocks ?? []).map((block, i) => {
     const view = <BlockView key={i} block={block} ctx={{ section, folio }} />;
     folio += spreadsFor(block) * 2;
@@ -41,11 +45,9 @@ export default async function ChapterPage({ params }: Props) {
 
   return (
     <BookPages>
-      {chapter ? (
-        views
-      ) : (
+      {needsTitle && (
         <Spread
-          folio={folio}
+          folio={section.folio}
           label={section.title}
           left={
             <header className={blocks.opener}>
@@ -63,14 +65,17 @@ export default async function ChapterPage({ params }: Props) {
                   id: "pendiente",
                   paper: "kraft",
                   from: "",
-                  body: `Estas páginas se están escribiendo. Pronto llegarán las fotos y los mensajes de ${section.title}.`,
+                  body: chapter
+                    ? `Estas páginas se están escribiendo. Pronto llegarán las fotos de ${section.title}.`
+                    : `Estas páginas se están escribiendo. Pronto llegarán las fotos y los mensajes de ${section.title}.`,
                 }}
               />
             </div>
           }
         />
       )}
-      <ChapterEnd current={section} next={next} folio={chapter ? folio : folio + 2} />
+      {views}
+      <ChapterEnd current={section} next={next} folio={folio} />
     </BookPages>
   );
 }
