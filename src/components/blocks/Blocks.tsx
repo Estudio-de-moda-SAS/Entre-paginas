@@ -156,13 +156,45 @@ function Collage({ block, ctx }: { block: Of<"collage">; ctx: Ctx }) {
 
 /* ── Notas: mensajes en papeles distintos, repartidos en pliegos ── */
 
-/** Notas por pliego: 4 en la página izquierda (bajo el título) y 6 en la derecha. */
+/** Máximo de notas por pliego; se reparten en partes iguales entre los pliegos. */
 const PER_SPREAD = 10;
-const PER_LEFT = 4;
 function chunkNotes(notes: NoteData[]) {
+  const count = Math.max(1, Math.ceil(notes.length / PER_SPREAD));
   const out: NoteData[][] = [];
-  for (let i = 0; i < notes.length; i += PER_SPREAD) out.push(notes.slice(i, i + PER_SPREAD));
-  return out.length ? out : [[]];
+  let start = 0;
+  for (let c = 0; c < count; c++) {
+    const size = Math.floor(notes.length / count) + (c < notes.length % count ? 1 : 0);
+    out.push(notes.slice(start, start + size));
+    start += size;
+  }
+  return out;
+}
+
+/** Cuánto espacio ocupa una nota, aproximado por la longitud del texto más el papel y la firma. */
+const weight = (n: NoteData) => n.body.length + 140;
+/** Lo que ocupa el título de la sección en la primera página izquierda. */
+const HEADING_WEIGHT = 450;
+
+/**
+ * Cuántas notas van en la página izquierda para que las dos páginas queden
+ * con un peso parecido, sin alterar el orden de las notas.
+ */
+function splitPoint(chunk: NoteData[], withHeading: boolean) {
+  if (chunk.length < 2) return chunk.length;
+  const total = chunk.reduce((sum, n) => sum + weight(n), 0);
+  const offset = withHeading ? HEADING_WEIGHT : 0;
+  let best = 1;
+  let bestDiff = Infinity;
+  let left = 0;
+  for (let k = 1; k < chunk.length; k++) {
+    left += weight(chunk[k - 1]);
+    const diff = Math.abs(left + offset - (total - left));
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = k;
+    }
+  }
+  return best;
 }
 const TILTS = [-1.2, -3, 1.5, -1, 2.5, -2, 1];
 
@@ -171,8 +203,9 @@ function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
   return (
     <>
       {chunks.map((chunk, c) => {
-        const left = chunk.slice(0, PER_LEFT);
-        const right = chunk.slice(PER_LEFT);
+        const leftCount = splitPoint(chunk, c === 0);
+        const left = chunk.slice(0, leftCount);
+        const right = chunk.slice(leftCount);
         return (
           <Spread
             key={c}
@@ -197,7 +230,7 @@ function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
             right={
               <div className={s.board}>
                 {right.map((n, i) => (
-                  <Note key={n.id} note={n} tilt={TILTS[(i + PER_LEFT) % TILTS.length]} />
+                  <Note key={n.id} note={n} tilt={TILTS[(i + leftCount) % TILTS.length]} />
                 ))}
               </div>
             }
