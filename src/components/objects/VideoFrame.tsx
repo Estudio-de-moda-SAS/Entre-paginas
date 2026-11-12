@@ -7,18 +7,24 @@ import { DemoMark, Tape } from "./Tape";
 import s from "./interactive.module.css";
 
 /**
- * Video de YouTube dentro de una copia impresa. El reproductor solo se
- * carga cuando la persona lo pide, así la página no pesa de entrada.
+ * Video dentro de una copia impresa. Puede ser un archivo propio
+ * (public/videos/) o un video de YouTube. Nada se reproduce solo: el de
+ * YouTube ni siquiera se carga hasta que la persona lo pide.
  */
-export function VideoFrame({ video }: { video: Video }) {
+export function VideoFrame({ video, className, tilt }: { video: Video; className?: string; tilt?: number }) {
   const id = youtubeId(video.youtube);
   const [playing, setPlaying] = useState(false);
 
   return (
-    <figure className={s.video}>
+    <figure className={`${s.video} ${className ?? ""}`} data-ratio={video.ratio ?? "horizontal"}
+      style={tilt === undefined ? undefined : { rotate: `${tilt}deg` }}
+    >
       <Tape color="rosa" at="top" rotate={2} />
       <div className={s.screen}>
-        {playing && id ? (
+        {video.src ? (
+          // "#t=0.1" hace que el navegador (también en iPhone) muestre el primer cuadro como portada
+          <video src={`${video.src}#t=0.1`} controls playsInline preload="metadata" aria-label={video.title} />
+        ) : playing && id ? (
           <iframe
             src={youtubeEmbedUrl(id)}
             title={video.title}
@@ -37,7 +43,10 @@ export function VideoFrame({ video }: { video: Video }) {
         )}
       </div>
       <figcaption className={s.videoCaption}>
-        <span>{video.caption ?? video.title}</span>
+        <span>
+          {video.caption ?? video.title}
+          {video.from && <span className={s.videoFrom}>{video.from}</span>}
+        </span>
         {video.demo && <DemoMark>video de demostración</DemoMark>}
       </figcaption>
     </figure>

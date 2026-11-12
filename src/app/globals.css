@@ -19,6 +19,7 @@
   --oliva-hondo: #5f624a;
   --rosa-hondo: #b98f86;
   --kraft-hondo: #a99273;
+  --rojo: #a63a2c; /* solo para el aviso de "advertencia" de Entre risas */
 
   /* Tipografía */
   --f-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;

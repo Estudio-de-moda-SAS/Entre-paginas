@@ -19,6 +19,8 @@ export type Photo = {
   caption?: string;
   /** Fecha tal como se escribiría a mano: "marzo 2023", "un viernes cualquiera". */
   date?: string;
+  /** Quién firma el pie (se escribe debajo, más pequeño). */
+  from?: string;
   /** Proporción de la foto original. */
   ratio?: "portrait" | "landscape" | "square" | "wide";
   /** Punto de enfoque al recortar (CSS object-position), p. ej. "50% 30%". */
@@ -49,6 +51,8 @@ export type Letter = {
   to: string;
   /** Párrafos de la carta. */
   body: string[];
+  /** Línea de despedida antes de la firma: "Con todo nuestro cariño,". */
+  closing?: string;
   /** Firma manuscrita. */
   signature: string;
   date?: string;
@@ -111,7 +115,44 @@ export type Block =
       letter: Letter & { envelopeTo: string };
       audio?: Audio;
       video?: Video;
+    }
+  | {
+      /** Carta final a doble página: título a la izquierda, la carta en dos hojas. */
+      type: "despedida";
+      title: string;
+      letter: Letter;
+    }
+  | {
+      /**
+       * Apertura solo de texto: título del capítulo con una carta de bienvenida
+       * a la izquierda y una nota adhesiva grande a la derecha.
+       */
+      type: "bienvenida";
+      /** Primera línea, bajo el título. */
+      lead: string;
+      intro: string[];
+      /** Lista con su encabezado ("Nota importante" → "Se vale…"). */
+      rules?: { title: string; items: string[] };
+      /** Frase destacada como un sello. */
+      goldenRule?: { label: string; text: string };
+      outro?: string;
+      signature?: string;
+      /** Nota adhesiva grande con un recuadro de advertencia. */
+      warning?: { title: string; headline: string; body: string; footer?: string };
+    }
+  | {
+      /** Videos y fotos sueltos, cada uno con su mensaje: dos por pliego. */
+      type: "momentos";
+      items: Moment[];
     };
+
+/** Un recuerdo del capítulo de momentos: un video o una foto, con su nota. */
+export type Moment = {
+  video?: Video;
+  photo?: Photo;
+  /** Mensaje que acompaña al recuerdo. Si no se indica papel, se alterna solo. */
+  note?: Omit<Note, "paper"> & { paper?: Paper };
+};
 
 export type Audio = {
   title: string;
@@ -129,6 +170,12 @@ export type Video = {
   title: string;
   /** URL de YouTube (normal, corta o no listada) o solo el ID. */
   youtube?: string;
+  /** Archivo propio en public/videos/ (lo genera `npm run medios`). */
+  src?: string;
+  /** Quién firma el pie del video. */
+  from?: string;
+  /** Forma del video; los de celular suelen ser verticales. */
+  ratio?: "vertical" | "horizontal" | "square";
   caption?: string;
   demo?: boolean;
 };

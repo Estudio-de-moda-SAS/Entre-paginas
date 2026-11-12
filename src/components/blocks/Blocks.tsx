@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Block, Note as NoteData, Section } from "@/content/types";
+import type { Block, Moment, Note as NoteData, Section } from "@/content/types";
 import { Spread } from "@/components/book/Spread";
 import { PhotoImage, Polaroid, Print } from "@/components/objects/Photo";
 import { Note } from "@/components/objects/Note";
@@ -7,6 +7,8 @@ import { DemoMark, Tape } from "@/components/objects/Tape";
 import { Envelope } from "@/components/objects/Envelope";
 import { AudioNote } from "@/components/objects/AudioNote";
 import { VideoFrame } from "@/components/objects/VideoFrame";
+import { LetterSheet } from "@/components/objects/LetterSheet";
+import { Clip } from "@/components/objects/Tape";
 import s from "./blocks.module.css";
 
 type Ctx = { section: Section; folio: number };
@@ -14,6 +16,7 @@ type Ctx = { section: Section; folio: number };
 /** Cuántos pliegos ocupa un bloque (para numerar los folios). */
 export function spreadsFor(block: Block): number {
   if (block.type === "notas") return chunkNotes(block.notes).length;
+  if (block.type === "momentos") return Math.max(1, Math.ceil(block.items.length / 2));
   return 1;
 }
 
@@ -30,6 +33,12 @@ export function BlockView({ block, ctx }: { block: Block; ctx: Ctx }): ReactNode
       return <FullBleed block={block} ctx={ctx} />;
     case "sobre-y-voces":
       return <Voices block={block} ctx={ctx} />;
+    case "momentos":
+      return <Moments block={block} ctx={ctx} />;
+    case "bienvenida":
+      return <Welcome block={block} ctx={ctx} />;
+    case "despedida":
+      return <Farewell block={block} ctx={ctx} />;
   }
 }
 
@@ -241,6 +250,138 @@ function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
   );
 }
 
+/* ── Despedida: la carta final de todos, en dos hojas ── */
+
+function Farewell({ block, ctx }: { block: Of<"despedida">; ctx: Ctx }) {
+  const { section } = ctx;
+  return (
+    <Spread
+      folio={ctx.folio}
+      running={section.title}
+      label={`${section.title}: ${block.title}`}
+      left={
+        <div className={s.farewellLeft}>
+          <header>
+            <p className={s.farewellKicker}>{section.title}</p>
+            <h1 className={s.farewellTitle}>{block.title}</h1>
+          </header>
+          <LetterSheet letter={block.letter} sheet="primera" tilt={-0.6}>
+            <Clip style={{ left: "2.5rem" }} />
+          </LetterSheet>
+        </div>
+      }
+      right={
+        <div className={s.farewellRight}>
+          <LetterSheet letter={block.letter} sheet="segunda" tilt={0.7}>
+            <Tape color="rosa" at="top" rotate={-2} />
+          </LetterSheet>
+        </div>
+      }
+    />
+  );
+}
+
+/* ── Bienvenida: título con una carta a la izquierda, advertencia a la derecha ── */
+
+function Welcome({ block, ctx }: { block: Of<"bienvenida">; ctx: Ctx }) {
+  const { section } = ctx;
+  return (
+    <Spread
+      folio={ctx.folio}
+      label={`Capítulo ${section.numeral ?? ""}: ${section.title}`}
+      left={
+        <header className={s.welcome}>
+          {section.numeral && <p className={s.numeral}>Capítulo {section.numeral}</p>}
+          <h1 className={s.chapterTitle}>{section.title}</h1>
+          <p className={s.welcomeLead}>{block.lead}</p>
+          <div className={s.welcomeText}>
+            {block.intro.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+          {block.rules && (
+            <section className={s.rules} aria-label={block.rules.title}>
+              <h2 className={s.rulesTitle}>{block.rules.title}</h2>
+              <ul>
+                {block.rules.items.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {block.goldenRule && (
+            <p className={s.goldenRule}>
+              <span>{block.goldenRule.label}</span>
+              {block.goldenRule.text}
+            </p>
+          )}
+          {block.outro && <p className={s.welcomeText}>{block.outro}</p>}
+          {block.signature && <p className={s.welcomeSign}>{block.signature}</p>}
+        </header>
+      }
+      right={
+        block.warning && (
+          <div className={s.warningPage}>
+            <aside className={s.warning} aria-label={block.warning.title}>
+              <p className={s.warningBox}>
+                <span className={s.warningTitle}>{block.warning.title}</span>
+                <span className={s.warningHeadline}>{block.warning.headline}</span>
+              </p>
+              <p className={s.warningBody}>{block.warning.body}</p>
+              {block.warning.footer && <p className={s.warningFooter}>{block.warning.footer}</p>}
+            </aside>
+          </div>
+        )
+      }
+    />
+  );
+}
+
+/* ── Momentos: un video o una foto por página, con su mensaje al lado ── */
+
+const MOMENT_TILTS = [-1.5, 2, 1, -2.5];
+const MOMENT_PAPERS = ["adhesiva", "rasgado", "kraft", "cuaderno", "carta"] as const;
+
+function MomentPage({ item, index }: { item?: Moment; index: number }) {
+  if (!item) return null;
+  const vertical = item.video?.ratio === "vertical" || item.photo?.ratio === "portrait";
+  return (
+    <div className={s.moment} data-vertical={vertical || undefined} data-side={index % 2 ? "right" : "left"}>
+      {item.video ? (
+        <VideoFrame video={item.video} className={s.momentMedia} tilt={MOMENT_TILTS[index % MOMENT_TILTS.length]} />
+      ) : item.photo ? (
+        <Print photo={item.photo} tilt={MOMENT_TILTS[index % MOMENT_TILTS.length]} tape={{ color: "kraft", at: "top" }} className={s.momentMedia} width={800} />
+      ) : null}
+      {item.note && (
+        <Note
+          className={s.momentNote}
+          note={{ ...item.note, paper: item.note.paper ?? MOMENT_PAPERS[index % MOMENT_PAPERS.length] }}
+          tilt={MOMENT_TILTS[(index + 1) % MOMENT_TILTS.length]}
+        />
+      )}
+    </div>
+  );
+}
+
+function Moments({ block, ctx }: { block: Of<"momentos">; ctx: Ctx }) {
+  const pairs: Moment[][] = [];
+  for (let i = 0; i < block.items.length; i += 2) pairs.push(block.items.slice(i, i + 2));
+  return (
+    <>
+      {pairs.map((pair, p) => (
+        <Spread
+          key={p}
+          folio={ctx.folio + p * 2}
+          running={ctx.section.title}
+          label={`${ctx.section.title}: recuerdos ${p * 2 + 1}${pair[1] ? ` y ${p * 2 + 2}` : ""}`}
+          left={<MomentPage item={pair[0]} index={p * 2} />}
+          right={<MomentPage item={pair[1]} index={p * 2 + 1} />}
+        />
+      ))}
+    </>
+  );
+}
+
 /* ── Foto a doble página con una frase encima ── */
 
 function FullBleed({ block, ctx }: { block: Of<"foto-completa">; ctx: Ctx }) {
@@ -277,6 +418,26 @@ function FullBleed({ block, ctx }: { block: Of<"foto-completa">; ctx: Ctx }) {
 /* ── Sobre lacrado a la izquierda; audio y video a la derecha ── */
 
 function Voices({ block, ctx }: { block: Of<"sobre-y-voces">; ctx: Ctx }) {
+  // Solo la carta: el título a la izquierda y el sobre a la derecha.
+  if (!block.audio && !block.video) {
+    return (
+      <Spread
+        folio={ctx.folio}
+        running={ctx.section.title}
+        label="Una carta"
+        left={
+          <div className={s.voicesLeft}>
+            <h2 className={s.voicesHeading}>Lo que no cupo en una nota</h2>
+          </div>
+        }
+        right={
+          <div className={s.letterOnly}>
+            <Envelope letter={block.letter} />
+          </div>
+        }
+      />
+    );
+  }
   return (
     <Spread
       folio={ctx.folio}

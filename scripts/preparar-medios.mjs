@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Prepara las fotos y audios entregados para usarlos en el libro.
+ * Prepara las fotos, audios y videos entregados para usarlos en el libro.
  *
  *   npm run medios -- producto        (un equipo)
  *   npm run medios                    (todos los equipos de entregas/)
@@ -9,6 +9,7 @@
  * Lee:      entregas/<equipo>/          ← originales, NUNCA se modifican
  * Escribe:  public/fotos/<equipo>/*.webp  (máx. 2000 px, calidad alta, sin datos GPS)
  *           public/audio/<equipo>/*       (copia tal cual)
+ *           public/videos/<equipo>/*.mp4  (copia tal cual; los de WhatsApp ya vienen comprimidos)
  *
  * Al final imprime una tabla con cada foto, su proporción y la ruta que va
  * en el contenido del capítulo (campo `src`).
@@ -25,6 +26,36 @@ const MAX = 2000; // lado largo en px: nítido en pantallas grandes y retina
 const QUALITY = 84;
 
 const FOTO = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".tif", ".tiff", ".gif"]);
+const VIDEO = new Set([".mp4", ".m4v", ".webm"]);
+const VIDEO_PESADO_MB = 40; // GitHub avisa desde 50 MB y rechaza desde 100 MB
+
+/**
+ * Lee duración y tamaño de un MP4 sin herramientas externas
+ * (cajas mvhd y tkhd; tiene en cuenta la rotación de los videos de celular).
+ */
+function infoMp4(file) {
+  try {
+    const b = fs.readFileSync(file);
+    const m = b.indexOf("mvhd");
+    const v = b[m + 4];
+    const escala = v ? b.readUInt32BE(m + 24) : b.readUInt32BE(m + 16);
+    const dur = v ? Number(b.readBigUInt64BE(m + 28)) : b.readUInt32BE(m + 20);
+    let w = 0;
+    let h = 0;
+    for (let t = b.indexOf("tkhd"); t > 0 && !w; t = b.indexOf("tkhd", t + 4)) {
+      const o = b[t + 4] ? 12 : 0;
+      const girado = b.readInt32BE(t + 44 + o) === 0;
+      const tw = b.readUInt32BE(t + 80 + o) / 65536;
+      const th = b.readUInt32BE(t + 84 + o) / 65536;
+      if (tw && th) [w, h] = girado ? [th, tw] : [tw, th];
+    }
+    const s = Math.round(dur / escala);
+    return { w, h, duracion: `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` };
+  } catch {
+    return { w: 0, h: 0, duracion: "?" };
+  }
+}
+
 const AUDIO = new Set([".mp3", ".m4a", ".aac", ".ogg", ".opus", ".wav"]);
 const NO_SOPORTADO = new Set([".heic", ".heif"]);
 
@@ -74,6 +105,7 @@ async function procesarEquipo(equipo) {
   const origen = path.join(ENTREGAS, equipo);
   const destFotos = path.join(PUBLIC, "fotos", equipo);
   const destAudio = path.join(PUBLIC, "audio", equipo);
+  const destVideo = path.join(PUBLIC, "videos", equipo);
   const filas = [];
   const avisos = [];
   const usados = new Set();
@@ -133,8 +165,22 @@ async function procesarEquipo(equipo) {
       continue;
     }
 
-    if ([".mp4", ".mov", ".avi", ".mkv"].includes(ext)) {
-      avisos.push(`${rel}: los videos van a YouTube (no listado). Pásame el enlace.`);
+    if (VIDEO.has(ext)) {
+      const name = nombreLibre(usados, base, ext);
+      const out = path.join(destVideo, name);
+      fs.mkdirSync(destVideo, { recursive: true });
+      const al = fs.existsSync(out) && !rehacer;
+      if (!al) fs.copyFileSync(file, out);
+      const mb = fs.statSync(out).size / 1048576;
+      const { w, h, duracion } = infoMp4(out);
+      if (mb > VIDEO_PESADO_MB) avisos.push(`${rel}: pesa ${mb.toFixed(0)} MB. Mejor comprimirlo (por ejemplo, enviándolo por WhatsApp) antes de subirlo.`);
+      const forma = !w ? "?" : w / h < 0.9 ? "vertical" : w / h > 1.1 ? "horizontal" : "square";
+      filas.push({ original: rel, src: `/videos/${equipo}/${name}`, tamaño: `${w}×${h} · ${duracion}`, ratio: forma, kb: `${mb.toFixed(1)} MB`, estado: al ? "ya estaba" : "nuevo" });
+      continue;
+    }
+
+    if ([".mov", ".avi", ".mkv"].includes(ext)) {
+      avisos.push(`${rel}: este formato no se reproduce en todos los navegadores. Pásalo a MP4 (WhatsApp lo convierte al enviarlo).`);
     } else {
       avisos.push(`${rel}: tipo de archivo no reconocido, se omite.`);
     }
@@ -142,7 +188,7 @@ async function procesarEquipo(equipo) {
 
   console.log(`\n── ${equipo} ──`);
   if (filas.length) console.table(filas);
-  else console.log("No hay fotos ni audios.");
+  else console.log("No hay fotos, audios ni videos.");
   for (const a of avisos) console.log("  ⚠ " + a);
 }
 
