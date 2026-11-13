@@ -36,10 +36,11 @@ export function LetterSheet({ letter, sheet = "completa", tilt = 0, className, c
           <DemoMark />
         </span>
       )}
-      {showTo && <p className={s.letterTo}>{letter.to}</p>}
-      {paragraphs.map((p, i) => (
-        <p key={i}>{p}</p>
-      ))}
+      {showTo && letter.to && <p className={s.letterTo}>{letter.to}</p>}
+      {paragraphs.map((p, i) => {
+        const strong = p.match(/^\*\*(.+)\*\*$/);
+        return <p key={i}>{strong ? <strong className={s.letterStrong}>{strong[1]}</strong> : p}</p>;
+      })}
       {showSign && letter.closing && <p className={s.letterClosing}>{letter.closing}</p>}
       {showSign && (
         <p className={s.letterSign}>

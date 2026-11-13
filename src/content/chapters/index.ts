@@ -1,8 +1,10 @@
 import type { Chapter } from "../types";
 import { desarrollo } from "./desarrollo";
-import { producto } from "./producto";
+import { monomarcas } from "./monomarcas";
 import { entreRisas } from "./entre-risas";
 import { epilogo } from "./epilogo";
+import { marketing } from "./marketing";
+import { multimarca } from "./multimarca";
 
 /**
  * Capítulos con contenido. Para añadir uno nuevo:
@@ -11,8 +13,10 @@ import { epilogo } from "./epilogo";
  * Los capítulos que no están en esta lista se muestran como "en preparación".
  */
 export const chapters: Record<string, Chapter> = {
-  producto,
+  monomarcas,
   desarrollo,
+  multimarca,
+  marketing,
   "entre-risas": entreRisas,
   epilogo,
 };

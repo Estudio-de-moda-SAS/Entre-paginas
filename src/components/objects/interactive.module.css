@@ -16,6 +16,10 @@
   line-height: 1.2;
   margin: 0 0 1.2rem;
 }
+.letterStrong {
+  font-weight: 600;
+  color: var(--tinta);
+}
 .letterClosing {
   margin: 1.4rem 0 0;
   font-style: italic;

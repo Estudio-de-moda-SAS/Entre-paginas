@@ -2,8 +2,8 @@
 
 *Las historias que escribimos contigo.*
 
-Libro digital de homenaje, hecho entre los equipos de Producto, Desarrollo,
-Marketplace, Marketing y Smartsale. Sitio 100 % estático (Next.js), sin backend.
+Libro digital de homenaje, hecho entre los equipos de Monomarcas, Desarrollo,
+Multimarca, Marketing y Smartsale. Sitio 100 % estático (Next.js), sin backend.
 
 ## Comandos
 
@@ -64,14 +64,14 @@ Los capítulos sin archivo aparecen como "en preparación" en el índice.
 ## Cómo entregar fotos y audios
 
 1. Descargar los archivos (de Drive o de donde estén) y ponerlos en
-   `entregas/<equipo>/`: `producto`, `desarrollo`, `marketplace`, `marketing`,
+   `entregas/<equipo>/`: `monomarcas`, `desarrollo`, `multimarca`, `marketing`,
    `smartsale`, `todos`, `notas-personales`. Se pueden usar subcarpetas.
 2. Ejecutar:
    ```bash
-   npm run medios -- producto
+   npm run medios -- monomarcas
    ```
-3. El script deja las versiones para el libro en `public/fotos/producto/` y
-   `public/audio/producto/`, e imprime la ruta de cada una (la que va en `src`).
+3. El script deja las versiones para el libro en `public/fotos/monomarcas/` y
+   `public/audio/monomarcas/`, e imprime la ruta de cada una (la que va en `src`).
 
 Qué hace con cada archivo:
 

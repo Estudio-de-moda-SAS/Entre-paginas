@@ -2,9 +2,9 @@
 /**
  * Prepara las fotos, audios y videos entregados para usarlos en el libro.
  *
- *   npm run medios -- producto        (un equipo)
+ *   npm run medios -- monomarcas        (un equipo)
  *   npm run medios                    (todos los equipos de entregas/)
- *   npm run medios -- producto --rehacer   (vuelve a generar aunque ya existan)
+ *   npm run medios -- monomarcas --rehacer   (vuelve a generar aunque ya existan)
  *
  * Lee:      entregas/<equipo>/          ← originales, NUNCA se modifican
  * Escribe:  public/fotos/<equipo>/*.webp  (máx. 2000 px, calidad alta, sin datos GPS)

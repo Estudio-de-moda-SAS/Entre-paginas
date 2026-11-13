@@ -4,7 +4,7 @@ import type { Letter, Photo } from "./types";
 export const prologueLetter: Letter = {
   to: "Para ti,",
   body: [
-    "Hay historias que no se escriben en un solo lugar ni con una sola voz. Esta la escribimos entre todos, desde Producto, Desarrollo, Marketplace, Marketing y Smartsale. Cada equipo guarda momentos distintos, pero todos compartimos algo en común: haber coincidido contigo en este capítulo de nuestras vidas.",
+    "Hay historias que no se escriben en un solo lugar ni con una sola voz. Esta la escribimos entre todos, desde Monomarcas, Desarrollo & UX, Multimarca, Marketing y Smartsale. Cada equipo guarda momentos distintos, pero todos compartimos algo en común: haber coincidido contigo en este capítulo de nuestras vidas.",
     "Entre estas páginas encontrarás fotografías, palabras, anécdotas, momentos que todavía nos hacen sonreír y recuerdos que quizás nunca habíamos encontrado la forma de contarte.",
     "No es un informe, no tiene cifras ni resultados que presentar. Es algo mucho más nuestro: un pedacito de todo lo que vivimos, aprendimos y construimos a tu lado.",
     "Queremos que recorras estas páginas sin prisa, que sonrías al reconocer algún momento, que te sorprendas con alguna historia y que, de vez en cuando, encuentres en estas palabras un motivo para recordar lo especial que fue compartir este camino contigo.",

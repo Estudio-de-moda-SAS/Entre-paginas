@@ -11,11 +11,16 @@ import { LetterSheet } from "@/components/objects/LetterSheet";
 import { Clip } from "@/components/objects/Tape";
 import s from "./blocks.module.css";
 
-type Ctx = { section: Section; folio: number };
+/** opensChapter: el bloque abre el capítulo (sin portadilla) y lleva el título. */
+type Ctx = { section: Section; folio: number; opensChapter?: boolean };
 
 /** Cuántos pliegos ocupa un bloque (para numerar los folios). */
-export function spreadsFor(block: Block): number {
-  if (block.type === "notas") return chunkNotes(block.notes).length;
+export function spreadsFor(block: Block, opensChapter = false): number {
+  if (block.type === "notas") {
+    if (!opensChapter) return chunkNotes(block.notes).length;
+    const rest = block.notes.slice(OPEN_MAX);
+    return 1 + (rest.length ? chunkNotes(rest).length : 0);
+  }
   if (block.type === "momentos") return Math.max(1, Math.ceil(block.items.length / 2));
   return 1;
 }
@@ -165,6 +170,9 @@ function Collage({ block, ctx }: { block: Of<"collage">; ctx: Ctx }) {
 
 /* ── Notas: mensajes en papeles distintos, repartidos en pliegos ── */
 
+/** Notas que caben junto al título cuando las notas abren el capítulo. */
+const OPEN_MAX = 4;
+
 /** Máximo de notas por pliego; se reparten en partes iguales entre los pliegos. */
 const PER_SPREAD = 10;
 function chunkNotes(notes: NoteData[]) {
@@ -208,11 +216,47 @@ function splitPoint(chunk: NoteData[], withHeading: boolean) {
 const TILTS = [-1.2, -3, 1.5, -1, 2.5, -2, 1];
 
 function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
-  const chunks = chunkNotes(block.notes);
+  // Si abren el capítulo, solo las primeras notas van junto al título; el resto sigue en pliegos normales.
+  const chunks = ctx.opensChapter
+    ? [block.notes.slice(0, OPEN_MAX), ...(block.notes.length > OPEN_MAX ? chunkNotes(block.notes.slice(OPEN_MAX)) : [])]
+    : chunkNotes(block.notes);
   return (
     <>
       {chunks.map((chunk, c) => {
-        const leftCount = splitPoint(chunk, c === 0);
+        // Si abre el capítulo: título a la izquierda; la sección y sus notas a la derecha.
+        if (c === 0 && ctx.opensChapter) {
+          const { section } = ctx;
+          return (
+            <Spread
+              key={c}
+              folio={ctx.folio}
+              running={section.title}
+              label={`Capítulo ${section.numeral ?? ""}: ${section.title}`}
+              left={
+                <header className={s.opener}>
+                  {section.numeral && <p className={s.numeral}>Capítulo {section.numeral}</p>}
+                  <h1 className={s.chapterTitle}>{section.title}</h1>
+                  <p className={s.chapterSub}>{section.subtitle}</p>
+                </header>
+              }
+              right={
+                <div className={s.notesLeft}>
+                  <div>
+                    <h2 className={s.notesHeading}>{block.heading}</h2>
+                    {block.intro && <p className={s.notesIntro}>{block.intro}</p>}
+                  </div>
+                  <div className={s.board}>
+                    {chunk.map((n, i) => (
+                      <Note key={n.id} note={n} tilt={TILTS[i % TILTS.length]} />
+                    ))}
+                  </div>
+                </div>
+              }
+            />
+          );
+        }
+        const withHeading = c === 0;
+        const leftCount = splitPoint(chunk, withHeading);
         const left = chunk.slice(0, leftCount);
         const right = chunk.slice(leftCount);
         return (
@@ -223,7 +267,7 @@ function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
             label={c === 0 ? block.heading : `${block.heading} (continuación)`}
             left={
               <div className={s.notesLeft}>
-                {c === 0 && (
+                {withHeading && (
                   <div>
                     <h2 className={s.notesHeading}>{block.heading}</h2>
                     {block.intro && <p className={s.notesIntro}>{block.intro}</p>}
@@ -258,12 +302,14 @@ function Farewell({ block, ctx }: { block: Of<"despedida">; ctx: Ctx }) {
     <Spread
       folio={ctx.folio}
       running={section.title}
-      label={`${section.title}: ${block.title}`}
+      label={block.title ? `${section.title}: ${block.title}` : `Capítulo ${section.numeral ?? ""}: ${section.title}`}
       left={
         <div className={s.farewellLeft}>
           <header>
-            <p className={s.farewellKicker}>{section.title}</p>
-            <h1 className={s.farewellTitle}>{block.title}</h1>
+            <p className={s.farewellKicker}>
+              {block.title ? section.title : section.numeral ? `Capítulo ${section.numeral}` : section.title}
+            </p>
+            <h1 className={s.farewellTitle}>{block.title ?? section.title}</h1>
           </header>
           <LetterSheet letter={block.letter} sheet="primera" tilt={-0.6}>
             <Clip style={{ left: "2.5rem" }} />

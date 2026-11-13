@@ -34,13 +34,15 @@ export default async function ChapterPage({ params }: Props) {
   // Sin apertura propia, el capítulo abre con su título y una nota de que
   // las fotos están por llegar.
   const opener = chapter?.blocks[0]?.type;
-  const needsTitle = opener !== "apertura" && opener !== "bienvenida" && opener !== "despedida";
+  const needsTitle =
+    chapter?.titlePage !== false && opener !== "apertura" && opener !== "bienvenida" && opener !== "despedida";
 
   // Cada pliego ocupa dos folios.
   let folio = section.folio + (needsTitle ? 2 : 0);
   const views = (chapter?.blocks ?? []).map((block, i) => {
-    const view = <BlockView key={i} block={block} ctx={{ section, folio }} />;
-    folio += spreadsFor(block) * 2;
+    const opensChapter = i === 0 && chapter?.titlePage === false;
+    const view = <BlockView key={i} block={block} ctx={{ section, folio, opensChapter }} />;
+    folio += spreadsFor(block, opensChapter) * 2;
     return view;
   });
 
