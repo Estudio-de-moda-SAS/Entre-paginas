@@ -48,8 +48,9 @@ export type Note = {
 };
 
 export type Letter = {
-  to: string;
-  /** Párrafos de la carta. */
+  /** Saludo; si la carta no lo tiene, se omite. */
+  to?: string;
+  /** Párrafos de la carta. Un párrafo entre **asteriscos** se destaca en negrita. */
   body: string[];
   /** Línea de despedida antes de la firma: "Con todo nuestro cariño,". */
   closing?: string;
@@ -117,9 +118,12 @@ export type Block =
       video?: Video;
     }
   | {
-      /** Carta final a doble página: título a la izquierda, la carta en dos hojas. */
+      /**
+       * Carta a doble página en dos hojas, con un título a la izquierda.
+       * Sin `title`, abre el capítulo: lleva "Capítulo N" y el nombre del capítulo.
+       */
       type: "despedida";
-      title: string;
+      title?: string;
       letter: Letter;
     }
   | {
@@ -183,6 +187,11 @@ export type Video = {
 export type Chapter = {
   slug: string;
   blocks: Block[];
+  /**
+   * false: sin portadilla propia; el capítulo empieza directo en su primer
+   * bloque (el título ya aparece al final del capítulo anterior).
+   */
+  titlePage?: false;
 };
 
 /** Una entrada del libro, en el orden en que se lee. */

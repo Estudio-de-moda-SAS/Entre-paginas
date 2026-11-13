@@ -15,7 +15,8 @@
   margin: 0 0 0.75rem;
 }
 .chapterTitle {
-  font-size: var(--t-3xl);
+  /* un poco menor que --t-3xl para que nombres largos ("Monomarcas") quepan en la página */
+  font-size: clamp(3rem, 6.4vw, 6.25rem);
   font-weight: 300;
   letter-spacing: -0.02em;
   line-height: 0.9;
@@ -218,11 +219,13 @@
   margin: 0 0 0.5rem;
 }
 .farewellTitle {
-  font-size: var(--t-2xl);
+  font-size: clamp(2.6rem, 5.6vw, 5.25rem);
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: -0.015em;
-  max-width: 10ch;
+  /* nunca parte una palabra; solo baja de línea entre palabras */
+  max-width: 12ch;
+  hyphens: none;
 }
 .farewellRight {
   display: grid;

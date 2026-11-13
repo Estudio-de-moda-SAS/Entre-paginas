@@ -7,7 +7,7 @@ export const book = {
   /** Quién firma el libro, en conjunto. */
   authors: "Tus equipos de Ecommerce",
   /** Los cinco equipos, tal como aparecen en el sello de la portada. */
-  teams: ["Producto", "Desarrollo & UX", "Marketplace", "Marketing", "Smartsale"],
+  teams: ["Monomarcas", "Desarrollo & UX", "Multimarca", "Marketing", "Smartsale"],
   /**
    * Su nombre, tal como irá escrito a mano en el ex libris (interior de la tapa).
    * Vacío: se deja la línea en blanco.
@@ -39,11 +39,11 @@ export const sections: Section[] = [
     folio: 9,
   },
   {
-    slug: "producto",
-    href: "/capitulos/producto/",
+    slug: "monomarcas",
+    href: "/capitulos/monomarcas/",
     kind: "capitulo",
     numeral: "I",
-    title: "Producto",
+    title: "Monomarcas",
     subtitle: "Las ideas también tienen historias.",
     folio: 11,
   },
@@ -57,11 +57,11 @@ export const sections: Section[] = [
     folio: 23,
   },
   {
-    slug: "marketplace",
-    href: "/capitulos/marketplace/",
+    slug: "multimarca",
+    href: "/capitulos/multimarca/",
     kind: "capitulo",
     numeral: "III",
-    title: "Marketplace",
+    title: "Multimarca",
     subtitle: "El arte de conectar oportunidades.",
     folio: 37,
   },
