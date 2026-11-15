@@ -145,10 +145,30 @@ export type Block =
       warning?: { title: string; headline: string; body: string; footer?: string };
     }
   | {
+      /** Mensajes personales completos: uno por página, dos por pliego. */
+      type: "mensajes";
+      /** Línea bajo el título del capítulo. */
+      intro?: string;
+      messages: Message[];
+    }
+  | {
       /** Videos y fotos sueltos, cada uno con su mensaje: dos por pliego. */
       type: "momentos";
       items: Moment[];
     };
+
+/** Un mensaje personal completo, firmado. */
+export type Message = {
+  /** Único; se usa como ancla (#mensaje-<id>) desde el índice. */
+  id: string;
+  from: string;
+  /** Texto completo. Párrafos separados con "
+
+". */
+  body: string;
+  /** Papel fijo; si no se indica, se elige según el largo del texto. */
+  paper?: Paper;
+};
 
 /** Un recuerdo del capítulo de momentos: un video o una foto, con su nota. */
 export type Moment = {

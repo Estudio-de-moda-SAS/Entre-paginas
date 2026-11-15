@@ -1,7 +1,7 @@
 import type { Photo } from "./types";
 
 /** Línea manuscrita bajo el título del índice. */
-export const indexAside = "cinco equipos, una sola historia";
+export const indexAside = "un solo equipo, una sola historia";
 
 /** La Polaroid junto al índice. */
 export const indexPhoto: Photo = {

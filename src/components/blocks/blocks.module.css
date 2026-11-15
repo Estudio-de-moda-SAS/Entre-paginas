@@ -184,6 +184,13 @@
   align-items: start;
   padding-top: 1rem;
 }
+/* una sola nota: ocupa el ancho de la página, sin columna vacía al lado */
+.board > :only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100%, 26rem);
+  max-width: none;
+}
 /* collage de mensajes: dos columnas desfasadas, como papeles pegados a mano */
 .board > :nth-child(even) {
   margin-top: 1.5rem;
@@ -201,6 +208,33 @@
 }
 .letterOnly > * {
   width: 100%;
+}
+
+/* ─────────── Mensajes completos ─────────── */
+
+.messagesIntro {
+  margin: 1.5rem 0 0;
+  max-width: 26rem;
+  font-style: italic;
+  color: var(--tinta-suave);
+}
+.messagePage {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 1.5rem 0;
+}
+/* cada mensaje ocupa su página: los papeles crecen con el texto */
+.messagePage .messageNote {
+  width: min(100%, 28rem);
+  max-width: none !important;
+  aspect-ratio: auto !important;
+}
+/* los mensajes cortos van en papeles más pequeños, como una nota de verdad */
+.messagePage .messageNote:is([data-paper="adhesiva"], [data-paper="kraft"], [data-paper="rasgado"]) {
+  width: min(100%, 21rem);
+  padding-top: 2rem;
+  padding-bottom: 1.6rem;
 }
 
 /* ─────────── Despedida (Epílogo) ─────────── */
