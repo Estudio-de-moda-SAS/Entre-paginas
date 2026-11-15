@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BookPages, Spread } from "@/components/book/Spread";
 import { Polaroid } from "@/components/objects/Photo";
+import { messageFolios } from "@/components/blocks/Blocks";
 import { getSection, sections } from "@/content/book";
 import { chapters } from "@/content/chapters";
 import { indexAside, indexPhoto } from "@/content/indice";
@@ -10,6 +11,19 @@ import s from "../pages.module.css";
 const section = getSection("indice")!;
 
 export const metadata: Metadata = { title: `${section.title} | Entre páginas` };
+
+/** Quienes escribieron en una sección de mensajes, con la página de cada uno. */
+function authorsOf(slug: string, folio: number) {
+  const chapter = chapters[slug];
+  const i = chapter?.blocks.findIndex((b) => b.type === "mensajes") ?? -1;
+  const block = i >= 0 ? chapter!.blocks[i] : undefined;
+  if (!block || block.type !== "mensajes") return [];
+  const opens = i === 0 && chapter!.titlePage === false;
+  const folios = messageFolios(block.messages, folio, opens);
+  return block.messages
+    .map((m, k) => ({ id: m.id, from: m.from, folio: folios[k] }))
+    .sort((a, b) => a.from.localeCompare(b.from, "es"));
+}
 
 /** Una sección está lista si es una página propia o un capítulo con contenido. */
 function isReady(slug: string) {
@@ -59,6 +73,21 @@ export default function Indice() {
                       {!isReady(e.slug) && <span className={s.pending}>en preparación</span>}
                     </span>
                   </Link>
+                  {authorsOf(e.slug, e.folio).length > 0 && (
+                    <ol className={s.authors} aria-label={`Mensajes en ${e.title}`}>
+                      {authorsOf(e.slug, e.folio).map((a) => (
+                        <li key={a.id}>
+                          <Link href={`${e.href}#mensaje-${a.id}`} className={s.author}>
+                            <span>{a.from}</span>
+                            <span className={s.authorFolio}>
+                              <span className="visually-hidden">página </span>
+                              {a.folio}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
                 </li>
               ))}
             </ol>

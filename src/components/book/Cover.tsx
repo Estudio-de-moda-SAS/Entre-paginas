@@ -6,7 +6,7 @@ import { book } from "@/content/book";
 import { consumeCloseFlag } from "./CloseBook";
 import s from "./cover.module.css";
 
-/** Sello circular con los nombres de los cinco equipos. */
+/** Sello circular de goma con el texto del libro alrededor. */
 function TeamsStamp({ teams }: { teams: string[] }) {
   const text = teams.join("  ✦  ") + "  ✦  ";
   return (
@@ -107,7 +107,7 @@ export function Cover() {
               </h1>
               <p className={s.tagline}>{book.tagline}</p>
             </div>
-            <TeamsStamp teams={book.teams} />
+            <TeamsStamp teams={book.stamp} />
             <p className={s.authors}>{book.authors}</p>
           </div>
           <div className={s.back}>

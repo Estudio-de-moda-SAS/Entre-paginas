@@ -6,8 +6,8 @@ export const book = {
   tagline: "Las historias que escribimos contigo.",
   /** Quién firma el libro, en conjunto. */
   authors: "Tus equipos de Ecommerce",
-  /** Los cinco equipos, tal como aparecen en el sello de la portada. */
-  teams: ["Monomarcas", "Desarrollo & UX", "Multimarca", "Marketing", "Smartsale"],
+  /** Texto que da la vuelta al sello de la portada. */
+  stamp: ["Equipo Ecommerce", "Entre páginas"],
   /**
    * Su nombre, tal como irá escrito a mano en el ex libris (interior de la tapa).
    * Vacío: se deja la línea en blanco.
@@ -39,58 +39,22 @@ export const sections: Section[] = [
     folio: 9,
   },
   {
-    slug: "monomarcas",
-    href: "/capitulos/monomarcas/",
+    slug: "lo-que-quisimos-decirte",
+    href: "/capitulos/lo-que-quisimos-decirte/",
     kind: "capitulo",
     numeral: "I",
-    title: "Monomarcas",
-    subtitle: "Las ideas también tienen historias.",
+    title: "Lo que quisimos decirte",
+    subtitle: "Un mensaje de cada uno, con todo lo que quería decirte.",
     folio: 11,
-  },
-  {
-    slug: "desarrollo",
-    href: "/capitulos/desarrollo/",
-    kind: "capitulo",
-    numeral: "II",
-    title: "Desarrollo & UX",
-    subtitle: "Entre códigos, retos y grandes ideas.",
-    folio: 23,
-  },
-  {
-    slug: "multimarca",
-    href: "/capitulos/multimarca/",
-    kind: "capitulo",
-    numeral: "III",
-    title: "Multimarca",
-    subtitle: "El arte de conectar oportunidades.",
-    folio: 37,
-  },
-  {
-    slug: "marketing",
-    href: "/capitulos/marketing/",
-    kind: "capitulo",
-    numeral: "IV",
-    title: "Marketing",
-    subtitle: "Cuando las ideas encuentran su voz.",
-    folio: 49,
-  },
-  {
-    slug: "smartsale",
-    href: "/capitulos/smartsale/",
-    kind: "capitulo",
-    numeral: "V",
-    title: "Smartsale",
-    subtitle: "Las personas detrás de cada historia.",
-    folio: 61,
   },
   {
     slug: "entre-risas",
     href: "/capitulos/entre-risas/",
     kind: "capitulo",
-    numeral: "VI",
+    numeral: "II",
     title: "Entre risas",
     subtitle: "Las pequeñas cosas que hicieron grande esta historia.",
-    folio: 73,
+    folio: 25,
   },
   {
     slug: "epilogo",
@@ -98,7 +62,7 @@ export const sections: Section[] = [
     kind: "final",
     title: "Epílogo",
     subtitle: "Las mejores historias nunca terminan.",
-    folio: 95,
+    folio: 49,
   },
 ];
 

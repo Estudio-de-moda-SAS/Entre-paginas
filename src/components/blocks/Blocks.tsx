@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Block, Moment, Note as NoteData, Section } from "@/content/types";
+import type { Block, Message, Moment, Note as NoteData, Paper, Section } from "@/content/types";
 import { Spread } from "@/components/book/Spread";
 import { PhotoImage, Polaroid, Print } from "@/components/objects/Photo";
 import { Note } from "@/components/objects/Note";
@@ -20,6 +20,10 @@ export function spreadsFor(block: Block, opensChapter = false): number {
     if (!opensChapter) return chunkNotes(block.notes).length;
     const rest = block.notes.slice(OPEN_MAX);
     return 1 + (rest.length ? chunkNotes(rest).length : 0);
+  }
+  if (block.type === "mensajes") {
+    const n = block.messages.length;
+    return opensChapter ? 1 + Math.ceil(Math.max(0, n - 1) / 2) : Math.max(1, Math.ceil(n / 2));
   }
   if (block.type === "momentos") return Math.max(1, Math.ceil(block.items.length / 2));
   return 1;
@@ -44,6 +48,8 @@ export function BlockView({ block, ctx }: { block: Block; ctx: Ctx }): ReactNode
       return <Welcome block={block} ctx={ctx} />;
     case "despedida":
       return <Farewell block={block} ctx={ctx} />;
+    case "mensajes":
+      return <Messages block={block} ctx={ctx} />;
   }
 }
 
@@ -290,6 +296,89 @@ function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
           />
         );
       })}
+    </>
+  );
+}
+
+/* ── Mensajes: uno completo por página ── */
+
+/**
+ * Página en la que cae cada mensaje. Si el bloque abre el capítulo, el
+ * primero va frente al título y los demás de a dos por pliego.
+ */
+export function messageFolios(messages: Message[], folio: number, opensChapter: boolean) {
+  return messages.map((_, i) => {
+    if (!opensChapter) return folio + i;
+    if (i === 0) return folio + 1;
+    return folio + 2 + (i - 1);
+  });
+}
+
+/** Papeles posibles según el largo; se toma el primero distinto del anterior. */
+function papersFor(messages: Message[]): Paper[] {
+  const out: Paper[] = [];
+  for (const m of messages) {
+    const len = m.body.length;
+    const options: Paper[] = len > 900 ? ["carta", "cuaderno"] : len > 450 ? ["cuaderno", "carta", "kraft"] : ["adhesiva", "kraft", "rasgado"];
+    const prev = out[out.length - 1];
+    out.push(m.paper ?? options.find((p) => p !== prev) ?? options[0]);
+  }
+  return out;
+}
+
+const MESSAGE_TILTS = [-1, 1.2, -0.6, 0.8, -1.4, 0.5];
+
+function MessagePage({ m, paper, index }: { m?: Message; paper?: Paper; index: number }) {
+  if (!m || !paper) return null;
+  return (
+    <div className={s.messagePage} id={`mensaje-${m.id}`}>
+      <Note
+        className={s.messageNote}
+        note={{ id: m.id, paper, from: m.from, body: m.body }}
+        tilt={MESSAGE_TILTS[index % MESSAGE_TILTS.length]}
+      />
+    </div>
+  );
+}
+
+function Messages({ block, ctx }: { block: Of<"mensajes">; ctx: Ctx }) {
+  const { section } = ctx;
+  const papers = papersFor(block.messages);
+  const items = block.messages.map((m, i) => ({ m, paper: papers[i], index: i }));
+  const first = ctx.opensChapter ? items.slice(0, 1) : [];
+  const rest = ctx.opensChapter ? items.slice(1) : items;
+  const pairs: (typeof items)[] = [];
+  for (let i = 0; i < rest.length; i += 2) pairs.push(rest.slice(i, i + 2));
+  const offset = ctx.opensChapter ? 1 : 0;
+  return (
+    <>
+      {first.map((it) => (
+        <Spread
+          key="abre"
+          folio={ctx.folio}
+          running={section.title}
+          label={`Capítulo ${section.numeral ?? ""}: ${section.title}`}
+          left={
+            <header className={s.opener}>
+              {section.numeral && <p className={s.numeral}>Capítulo {section.numeral}</p>}
+              <h1 className={s.chapterTitle}>{section.title}</h1>
+              <p className={s.chapterSub}>{section.subtitle}</p>
+              {block.intro && <p className={s.messagesIntro}>{block.intro}</p>}
+            </header>
+          }
+          right={<MessagePage {...it} />}
+        />
+      ))}
+      {pairs.map((pair, p) => (
+        <Spread
+          key={p}
+          folio={ctx.folio + (offset + p) * 2}
+          running={section.title}
+          label={`Mensajes de ${pair.map((x) => x.m.from).join(" y ")}`}
+          left={<MessagePage {...pair[0]} />}
+          right={<MessagePage {...pair[1]} />}
+        />
+      ))}
     </>
   );
 }
