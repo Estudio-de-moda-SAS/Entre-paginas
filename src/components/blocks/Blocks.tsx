@@ -302,18 +302,6 @@ function Notes({ block, ctx }: { block: Of<"notas">; ctx: Ctx }) {
 
 /* ── Mensajes: uno completo por página ── */
 
-/**
- * Página en la que cae cada mensaje. Si el bloque abre el capítulo, el
- * primero va frente al título y los demás de a dos por pliego.
- */
-export function messageFolios(messages: Message[], folio: number, opensChapter: boolean) {
-  return messages.map((_, i) => {
-    if (!opensChapter) return folio + i;
-    if (i === 0) return folio + 1;
-    return folio + 2 + (i - 1);
-  });
-}
-
 /** Papeles posibles según el largo; se toma el primero distinto del anterior. */
 function papersFor(messages: Message[]): Paper[] {
   const out: Paper[] = [];

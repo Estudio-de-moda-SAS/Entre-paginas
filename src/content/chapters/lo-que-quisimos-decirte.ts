@@ -66,6 +66,11 @@ export const loQueQuisimosDecirte: Chapter = {
           body: "Valen, muchas gracias por tu tiempo y por toda tu dedicación al equipo. Gracias por darme la oportunidad de ser parte de Estudio de Moda y por tu apoyo en todos los momentos difíciles.\n\nEres una gran persona y estoy seguro de que te irá muy bien dondequiera que vayas. Te deseo muchos éxitos en esta nueva etapa de tu vida.\n\nTe envío un abrazo enorme.",
         },
         {
+          id: "pipe",
+          from: "Pipe",
+          body: "Valen, en este nuevo capítulo que comienzas, deseo de corazón que tu determinación, carácter y disciplina te sigan llevando tan lejos como siempre has demostrado que puedes llegar. Estoy segura de que este nuevo camino estará lleno de oportunidades, aprendizajes, experiencias maravillosas; que cada reto se convierta en una oportunidad para crecer, alcanzar nuevas metas. ¡Que el cielo sea el límite!\n\nQuiero expresarte mi gratitud por el tiempo que compartimos, por cada enseñanza recibida, especialmente por la oportunidad de haber hecho parte de tu equipo. Me llevo grandes aprendizajes, experiencias valiosas, además de una profunda admiración por la persona y profesional que eres. Mi agradecimiento hacia ti será siempre inmenso.\n\nSigue cultivando esa inteligencia, curiosidad y pasión por el conocimiento que tanto te caracterizan. Que cada nuevo desafío te permita descubrir nuevas capacidades, fortalecer tu sabiduría, alcanzar todo aquello que te propongas.\n\n¡Eres una tesa! Te deseo lo mejor en esta nueva etapa. Que la vida te sorprenda con oportunidades extraordinarias, que nunca te falten motivos para brillar ni sueños por conquistar. ¡Muchísimos éxitos en este nuevo camino!",
+        },
+        {
           id: "thali",
           from: "Thali",
           body: "Vale, fue un placer conocerte, compartir contigo y aprender de ti. Admiro tu capacidad de liderazgo, de proyección y tu objetividad.\n\nQuiero agradecerte por haberme permitido hacer parte del equipo, por la acogida y por tu compromiso y disposición con mi aprendizaje. Sin duda, conocerlos y trabajar junto a ustedes será una experiencia memorable en mi carrera.",
