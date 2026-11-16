@@ -80,6 +80,11 @@ export const loQueQuisimosDecirte: Chapter = {
           from: "Marce",
           body: "Valen, quiero agradecerte por todo lo que nos enseñaste, por la confianza y por la excelente líder que fuiste y seguirás siendo. Como te lo dije en algún momento, el equipo tan teso que tenemos hoy es también reflejo de todo lo que construiste con nosotros.\n\nEstoy segura de que vienen cosas muy bonitas para ti y te deseo muchísimos éxitos en esta nueva etapa. ¡Un abrazoooo enorme!",
         },
+        {
+          id: "danny-maya",
+          from: "Danny Maya",
+          body: "Fuiste el mejor ejemplo que he tenido.\n\nMe enseñaste a pensar con la mente y no con la boca, a tener seguridad en mí y a entender que todos somos diferentes y que solo hace falta tomarse el tiempo de analizar a cada persona. Son lecciones que me llevo para siempre, y no solo en lo profesional, también en la vida.\n\nTe voy a extrañar un montón. Gracias por creer en mí y por hacerme mejor. Te deseo lo mejor en lo que viene, te lo mereces totalmente.\n\nCuenta conmigo para lo que necesites. ¡Un abrazo enorme!",
+        },
       ],
     },
   ],
