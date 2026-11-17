@@ -85,6 +85,11 @@ export const loQueQuisimosDecirte: Chapter = {
           from: "Danny Maya",
           body: "Fuiste el mejor ejemplo que he tenido.\n\nMe enseñaste a pensar con la mente y no con la boca, a tener seguridad en mí y a entender que todos somos diferentes y que solo hace falta tomarse el tiempo de analizar a cada persona. Son lecciones que me llevo para siempre, y no solo en lo profesional, también en la vida.\n\nTe voy a extrañar un montón. Gracias por creer en mí y por hacerme mejor. Te deseo lo mejor en lo que viene, te lo mereces totalmente.\n\nCuenta conmigo para lo que necesites. ¡Un abrazo enorme!",
         },
+        {
+          id: "vale-cortinez",
+          from: "Vale Cortinez",
+          body: "Valen, quiero agradecerle sinceramente por su liderazgo y apoyo durante el tiempo que trabajamos juntas, muchas gracias por todos los consejos y por brindar todo tu conocimiento, te deseo el mayor éxito en tus proyectos. Un abrazo",
+        },
       ],
     },
   ],

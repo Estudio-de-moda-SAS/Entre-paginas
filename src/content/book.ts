@@ -54,7 +54,7 @@ export const sections: Section[] = [
     numeral: "II",
     title: "Entre risas",
     subtitle: "Las pequeñas cosas que hicieron grande esta historia.",
-    folio: 27,
+    folio: 29,
   },
   {
     slug: "epilogo",
@@ -62,7 +62,7 @@ export const sections: Section[] = [
     kind: "final",
     title: "Epílogo",
     subtitle: "Las mejores historias nunca terminan.",
-    folio: 51,
+    folio: 53,
   },
 ];
 
